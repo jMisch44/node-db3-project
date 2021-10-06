@@ -44,35 +44,20 @@ function findSteps(scheme_id) {
   .select('st.step_id', 'st.step_number', 'st.instructions', 'sc.scheme_name')
   .where('sc.scheme_id', scheme_id)
   .orderBy('st.step_number')
-  /*
-    1C- Build a query in Knex that returns the following data.
-    The steps should be sorted by step_number, and the array
-    should be empty if there are no steps for the scheme:
-
-      [
-        {
-          "step_id": 5,
-          "step_number": 1,
-          "instructions": "collect all the sheep in Scotland",
-          "scheme_name": "Get Rich Quick"
-        },
-        {
-          "step_id": 4,
-          "step_number": 2,
-          "instructions": "profit",
-          "scheme_name": "Get Rich Quick"
-        }
-      ]
-  */
 }
 
-function add(scheme) { // EXERCISE D
-  /*
-    1D- This function creates a new scheme and resolves to _the newly created scheme_.
-  */
+function add(scheme) { 
+  return db('schemes').insert(scheme)
+  .then(([scheme_id]) => {
+    return db('schemes').where('scheme_id', scheme_id)
+    .first()
+  })
 }
 
-function addStep(scheme_id, step) { // EXERCISE E
+function addStep(scheme_id, step) { 
+  return db('steps')
+  .insert(step)
+  .where('scheme_id', scheme_id)
   /*
     1E- This function adds a step to the scheme with the given `scheme_id`
     and resolves to _all the steps_ belonging to the given `scheme_id`,
