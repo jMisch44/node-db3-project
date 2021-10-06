@@ -14,6 +14,7 @@ async function findById(scheme_id) {
   .leftJoin('steps as st', 'sc.scheme_id', 'st.scheme_id')
   .select(
     'sc.scheme_name', 
+    'sc.scheme_id',
     'st.*'
     )
   .where('sc.scheme_id', scheme_id)
@@ -22,14 +23,18 @@ async function findById(scheme_id) {
   const result = {
     scheme_id: rows[0].scheme_id,
     scheme_name: rows[0].scheme_name,
-    steps: rows.map(step => {
-        return {
-          step_id: step.step_id,
-          step_number: step.step_number,
-          instructions: step.instructions,
-        }
-    })
+    steps: [],
   }
+  rows.forEach(row => {
+    if(row.step_id) {
+      result.steps.push({
+        step_id: row.step_id,
+        step_number: row.step_number,
+        instructions: row.instructions,
+      })
+    }
+  });
+
   return result;
 }
 
